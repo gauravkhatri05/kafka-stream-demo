@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: kafka-processor
+  cloud:
+    stream:
+      function:
+        definition: evenNumberSquareProcessor
+      bindings:
+        evenNumberSquareProcessor-in-0:
+          destination: numbers
+          consumer:
+            use-native-decoding: true
+        evenNumberSquareProcessor-out-0:
+          destination: squaredNumbers
+          producer:
+            use-native-encoding: true
+      kafka:
+        binder:
+          auto-create-topics: true
+          auto-add-partitions: true
+          min-partition-count: 3
+          replication-factor: 3
+          brokers:
+            - localhost:9090
+            - localhost:9091
+            - localhost:9092
+        bindings:
+          evenNumberSquareProcessor-in-0:
+            consumer:
+              configuration:
+                key:
+                  deserializer: org.apache.kafka.common.serialization.StringDeserializer
+                value:
+                  deserializer: org.apache.kafka.common.serialization.LongDeserializer
+          evenNumberSquareProcessor-out-0:
+            producer:
+              configuration:
+                key:
+                  serializer: org.apache.kafka.common.serialization.StringSerializer
+                value:
+                  serializer: org.apache.kafka.common.serialization.LongSerializer

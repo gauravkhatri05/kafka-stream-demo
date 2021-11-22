@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: kafka-producer
+  cloud:
+    stream:
+      function:
+        definition: numberProducer
+      bindings:
+        numberProducer-out-0:
+          destination: numbers
+          producer:
+            use-native-encoding: true
+      kafka:
+        binder:
+          auto-create-topics: true
+          min-partition-count: 3
+          replication-factor: 3
+          brokers:
+            - localhost:9090
+            - localhost:9091
+            - localhost:9092
+        bindings:
+          numberProducer-out-0:
+            producer:
+              configuration:
+                key:
+                  serializer: org.apache.kafka.common.serialization.StringSerializer
+                value:
+                  serializer: org.apache.kafka.common.serialization.LongSerializer
